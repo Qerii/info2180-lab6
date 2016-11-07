@@ -9,20 +9,28 @@
 </head>
 
 <body>
-	
-   	 <input id="text" type="text" placeholder="Search..." required>
+	 <div style="border-width: 4px; height: 60px; border-style: solid; border-color: black; background-color: grey;"><h1>Web Dictionary</h1></div></br></br></br>
+   	 <input id="text1" type="text" placeholder="Search..." required>
      <input id="button" type="button" value="Search">
+     </br></br>
+     <div id="result">Result</div>
     
 </body>
 <script type="text/javascript">
 var search = document.getElementById('button');
+var inputText = document.getElementById('text1');
+var result = document.getElementById('result');
 
+
+var search = document.getElementById('button');
 search.addEventListener('click', function(){
 var xhr = new XMLHttpRequest();
-xhr.open('Get', 'request.php?q=definition');
+
+xhr.open('Get', 'request.php?q=' + inputText.value);
 xhr.onload = function(){
 	if (xhr.status === 200){
-		alert( xhr.responseText);
+		result.innerHTML = xhr.responseText;
+		//alert( xhr.responseText);
 		}
 		else{
 			alert('Request failed.' + xhr.status);
