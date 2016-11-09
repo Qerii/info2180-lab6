@@ -12,20 +12,22 @@
 	 <div style="border-width: 4px; height: 60px; border-style: solid; border-color: black; background-color: grey;"><h1>Web Dictionary</h1></div></br></br></br>
    	 <input id="text1" type="text" placeholder="Search..." required>
      <input id="button" type="button" value="Search">
+     
+     <input id="button1" type="button" value="Get All Definitions">
      </br></br>
-     <div id="result">Result</div>
+     <div id="result" ><strong>Result</strong></div>
     
 </body>
+
 <script type="text/javascript">
+//lookup any word
+/*
 var search = document.getElementById('button');
 var inputText = document.getElementById('text1');
 var result = document.getElementById('result');
-
-
 var search = document.getElementById('button');
 search.addEventListener('click', function(){
 var xhr = new XMLHttpRequest();
-
 xhr.open('Get', 'request.php?q=' + inputText.value);
 xhr.onload = function(){
 	if (xhr.status === 200){
@@ -38,5 +40,60 @@ xhr.onload = function(){
 	}
 xhr.send();
 });
+*/
+
+//send data in XML format
+window.onload = function() {
+    var viewAllBtn = document.querySelector('#button1');
+
+    viewAllBtn.addEventListener('click', function() {
+        var httpRequest = new XMLHttpRequest();
+
+        // GET Request
+        var url = "request.php?=&all=true";
+        httpRequest.onreadystatechange = button1;
+        httpRequest.open('GET', url);
+        httpRequest.send();
+
+        function button1() {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+              if (httpRequest.status === 200) {
+                // Note that we use responseXML instead of responseText
+                // when we are expecting XML data.
+                var response = httpRequest.responseXML;
+                var results = document.querySelector('#result');
+                var entries = response.getElementsByTagName('definition');
+
+                var list = document.createElement('ol');
+                results.appendChild(list);
+                for (var i = 0; i < entries.length; i++) {
+                    var defn = document.createElement('li');
+                    var name = document.createTextNode(entries[i].getAttribute("name"));
+                    var par = document.createElement("p");
+                    var par1 = document.createElement("p");
+                    var header = document.createElement("h3");
+                    var text = document.createTextNode(entries[i].childNodes[0].nodeValue);
+                    var auth = document.createTextNode(entries[i].getAttribute("author"));
+                  
+                    
+                    header.appendChild(name);
+                    par.appendChild(text);
+                    par1.appendChild(auth);
+                    defn.appendChild(header);
+                    defn.appendChild(par);
+                    defn.appendChild(par1);
+                    
+                    
+                    list.appendChild(defn);
+                    
+                
+                }
+              } else {
+                alert('There was a problem with the request.');
+              }
+            }
+        }
+    });
+};
 </script>
 </html>
